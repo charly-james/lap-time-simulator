@@ -16,13 +16,14 @@ def build_track(segments, ds=1.0):
             curvatures.append(curvature)
             total_distance += ds
     return np.array(distances), np.array(curvatures)
+
 sample_circuit = [("straight", 400, None),
-    ("corner", 90, 40),      # tight hairpin
+    ("corner", 90, 40),      
     ("straight", 250, None),
-    ("corner", 150, 120),    # fast sweeper
+    ("corner", 150, 120),    
     ("straight", 180, None),
-    ("corner", 60, 25),      # very tight chicane-like corner
+    ("corner", 60, 25),      
     ("straight", 320, None),
-    ("corner", 200, 200),    # gentle, high-speed corner
+    ("corner", 200, 200),    
     ("straight", 150, None),]
     
