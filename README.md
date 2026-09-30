@@ -1,7 +1,5 @@
 # Lap Time Simulator
 
-# Lap Time Simulator
-
 A Python-based vehicle lap time simulator built from first principles, applying
 vehicle dynamics to model velocity, acceleration, braking, and cornering performance.
 
@@ -38,13 +36,13 @@ progression can be followed.
 
 ## Results
 
-Sample circuitz:
+Sample circuit:
 
 | Model | Lap time |
 |---|---|
-| v1 - separate limits | [44.01] s |
-| v1 - friction circle | [44.09] s |
-| v1.5 - | [47.13] s |
+| v1 - separate limits | 44.01 s |
+| v1 - friction circle | 44.09 s |
+| v1.5 - | 47.13 s |
 
 ![Speed trace v1](v1_results.png)
 ![Speed trace v1.5](v1.5_results.png)
@@ -53,7 +51,7 @@ In v1 the car accelerates at a constant rate. In v1.5 the acceleration drops as 
 
 The car can also brake later in v1.5, since drag helps slow it down and downforce adds grip at high speed.
 
-Downforce raises the corner speeds since it increases the normal force and in consequence, the maximum grip, and because it grows with v², the gain is much bigger in fast corners than in slow ones. As a result, in the second turn, the car stays below its cornering limit, so it is limited by power rather than grip. In the last turn, the grip limit alloes a speed even higher than the car's top speed, so the corner doesn't limit the car at all.
+Downforce raises the corner speeds since it increases the normal force and in consequence, the maximum grip, and because it grows with v², the gain is much bigger in fast corners than in slow ones. As a result, in the second turn, the car stays below its cornering limit, so it is limited by power rather than grip. In the last turn, the grip limit allows a speed even higher than the car's top speed, so the corner doesn't limit the car at all.
 
 ## Limitations
 
