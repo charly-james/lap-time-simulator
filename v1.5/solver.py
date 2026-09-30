@@ -15,7 +15,7 @@ def corner_speed_limit(kappa, vehicle):
     v_max = vehicle.v_max()
     for i in range(len(k)):
         if k[i]<= c:    # Case where there is no limit due to downforce.
-            v_limit.append(v_max) # cap at absolute top speed
+            v_limit.append(v_max) 
         else:
             v_limit.append(np.minimum(np.sqrt(vehicle.mew * vehicle.g / (k[i] - c)), v_max))  # cap at absolute top speed
     speed_limit = np.array(v_limit)
@@ -23,7 +23,7 @@ def corner_speed_limit(kappa, vehicle):
 
 
 def a_long_tyre(v, kappa, vehicle):
-    """Longitudinal tyre acceleration left over after cornering (friction ellipse)."""
+    """Longitudinal tyre acceleration left over after cornering (friction circle)."""
     a_grip_max = vehicle.a_grip_max(v)
     a_lat_used = min(a_grip_max, v**2 * abs(kappa)) # Caps lateral acceleration at the maximum available grip.
     return np.sqrt(a_grip_max**2 - a_lat_used**2)

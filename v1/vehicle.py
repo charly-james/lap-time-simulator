@@ -47,41 +47,41 @@ def backward_pass(v_limit, ds, a_braking_max):
     return np.array(v_backward)
 
 
-def forward_pass_ellipse(kappa, v_limit, ds, a_traction_max, a_lateral_max, v_0=0.0):
-    """Compute the acceleration-limited speed profile using a friction ellipse.
+def forward_pass_friction_circle(kappa, v_limit, ds, a_traction_max, a_lateral_max, v_0=0.0):
+    """Compute the acceleration-limited speed profile using a friction circle.
 
     Longitudinal acceleration is reduced by the lateral acceleration used in corners.
     """
-    v_forward_ellipse = []
+    v_forward_friction_circle = []
     for i in range(len(v_limit)):
         if i == 0:
-            v_forward_ellipse.append(v_0)
+            v_forward_friction_circle.append(v_0)
         else:
-            a_lateral_used = min(a_traction_max, v_forward_ellipse[i-1]**2*abs(kappa[i-1]))
+            a_lateral_used = min(a_traction_max, v_forward_friction_circle[i-1]**2*abs(kappa[i-1]))
             a_long_tire =  mew*g *np.sqrt(1-(a_lateral_used/a_lateral_max)**2 )  # Longitudinal acceleration left from the tyres after cornering.
             a_long_available = min(a_long_tire, a_traction_max)  # Limited by either the tyres or the motor.
-            v_possible = np.sqrt(v_forward_ellipse[i-1]**2 + 2 * a_long_available * ds)
-            v_forward_ellipse.append(min(v_possible, v_limit[i]))
+            v_possible = np.sqrt(v_forward_friction_circle[i-1]**2 + 2 * a_long_available * ds)
+            v_forward_friction_circle.append(min(v_possible, v_limit[i]))
                 
-    return np.array(v_forward_ellipse )
+    return np.array(v_forward_friction_circle )
 
 
-def backward_pass_ellipse(kappa, v_limit, ds, a_braking_max, a_lateral_max):
-    """Compute the braking-limited speed profile using a friction ellipse.
+def backward_pass_friction_circle(kappa, v_limit, ds, a_braking_max, a_lateral_max):
+    """Compute the braking-limited speed profile using a friction circle.
 
     Braking deceleration is reduced by the lateral acceleration used in corners.
     """
-    v_backward_ellipse = []
+    v_backward_friction_circle = []
     for i in range(len(v_limit)-1, -1, -1):
         if i == len(v_limit)-1:
-            v_backward_ellipse.append(v_limit[i])
+            v_backward_friction_circle.append(v_limit[i])
         else:
-            a_lateral_used = min(a_braking_max, v_backward_ellipse[-1]**2*abs(kappa[i+1]))
+            a_lateral_used = min(a_braking_max, v_backward_friction_circle[-1]**2*abs(kappa[i+1]))
             a_long_available = a_braking_max*np.sqrt(1-(a_lateral_used/a_lateral_max)**2 )  # Braking deceleration left from the tyres after cornering.
-            v_possible = np.sqrt(v_backward_ellipse[-1]**2 + 2 * a_long_available * ds)
-            v_backward_ellipse.append(min(v_possible, v_limit[i]))
-    v_backward_ellipse.reverse()
-    return np.array(v_backward_ellipse)
+            v_possible = np.sqrt(v_backward_friction_circle[-1]**2 + 2 * a_long_available * ds)
+            v_backward_friction_circle.append(min(v_possible, v_limit[i]))
+    v_backward_friction_circle.reverse()
+    return np.array(v_backward_friction_circle)
 
     
 def lap_time(v_actual, ds=1.0):
@@ -101,10 +101,10 @@ def solve_simple(kappa, ds, v_0=0.0):
     return v, lap_time(v, ds), v_limit
 
 
-def solve_ellipse(kappa, ds, v_0=0.0):
-    """Run the friction ellipse model. Returns speed profile (m/s), lap time (s) and corner speed limits (m/s)."""
+def solve_friction_circle(kappa, ds, v_0=0.0):
+    """Run the friction circle model. Returns speed profile (m/s), lap time (s) and corner speed limits (m/s)."""
     v_limit = corner_speed_limit(kappa)
-    v_fwd = forward_pass_ellipse(kappa, v_limit, ds, a_traction_max, a_lateral_max, v_0)
-    v_bwd = backward_pass_ellipse(kappa, v_limit, ds, a_braking_max, a_lateral_max)
+    v_fwd = forward_pass_friction_circle(kappa, v_limit, ds, a_traction_max, a_lateral_max, v_0)
+    v_bwd = backward_pass_friction_circle(kappa, v_limit, ds, a_braking_max, a_lateral_max)
     v = np.minimum(v_fwd, v_bwd)
     return v, lap_time(v, ds), v_limit

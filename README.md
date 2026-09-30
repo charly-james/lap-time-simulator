@@ -7,7 +7,7 @@ vehicle dynamics to model velocity, acceleration, braking, and cornering perform
 
 This project simulates a vehicle's speed around a track by combining:
 - A free-body derivation of a vehicle's traction, braking, and cornering limits
-- A point-mass vehicle model with a combined friction-ellipse tyre constraint
+- A point-mass vehicle model with a combined friction-circle tyre constraint
 - A forward/backward speed-profile solver to compute a physically achievable
   speed trace and resulting lap time
 - The effects of downforce, drag, and rolling resistance.
@@ -17,7 +17,7 @@ progression can be followed.
 
 ## Versions
 
-### v1 - Point-mass model with friction ellipse
+### v1 - Point-mass model with friction circle
 - Track definition from straight/corner segments, with curvature computed
   at fine resolution along the lap
 - Corner speed limits derived from a friction-circle tyre model
@@ -25,7 +25,7 @@ progression can be followed.
   realistic speed profile
 - Combined friction-circle constraint, coupling lateral and longitudinal
   tyre force rather than treating them independently 
-- Comparison between separate limits and the friction ellipse
+- Comparison between separate limits and the friction circle
 
 ### v1.5 - Powertrain and aerodynamic forces
 - Vehicle parameters grouped in a `Vehicle` dataclass
@@ -42,7 +42,7 @@ Sample circuit:
 |---|---|
 | v1 - separate limits | 44.01 s |
 | v1 - friction circle | 44.09 s |
-| v1.5 - | 47.13 s |
+| v1.5 | 47.13 s |
 
 ![Speed trace v1](v1_results.png)
 ![Speed trace v1.5](v1.5_results.png)
@@ -64,7 +64,7 @@ Downforce raises the corner speeds since it increases the normal force and in co
 
 - [x] v1: Point-mass simulator with friction-circle tyre model
 - [x] v1: Forward/backward speed-profile solver
-- [x] v1: Combined friction ellipse (lateral/longitudinal coupling)
+- [x] v1: Combined friction circle (lateral/longitudinal coupling)
 - [x] v1.5: Power-limited traction (constant-force and constant-power regions)
 - [x] v1.5: Aerodynamic drag, downforce and rolling resistance
 - [ ] v2: Bicycle model with Pacejka Magic Formula tyres
