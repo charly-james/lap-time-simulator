@@ -47,7 +47,7 @@ Sample circuit, [NUMBER] m long.
 | v1.5 - | [47.13] s |
 
 ![Speed trace v1](v1_results.png)
-![Speed trace v1](v1.5_results.png)
+![Speed trace v1.5](v1.5_results.png)
 
 In v1 the car accelerates at a constant rate. In v1.5 the acceleration drops as speed rises, because above the motor's base speed the drive force falls as P/v while drag grows with v², so the speed levels off towards a top speed set by power and drag rather than by a fixed cap.
 
