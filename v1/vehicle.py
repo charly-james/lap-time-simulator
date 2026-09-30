@@ -76,7 +76,7 @@ def backward_pass_friction_circle(kappa, v_limit, ds, a_braking_max, a_lateral_m
         if i == len(v_limit)-1:
             v_backward_friction_circle.append(v_limit[i])
         else:
-            a_lateral_used = min(a_braking_max, v_backward_friction_circle[-1]**2*abs(kappa[i+1]))
+            a_lateral_used = min(a_lateral_max, v_backward_friction_circle[-1]**2*abs(kappa[i+1]))
             a_long_available = a_braking_max*np.sqrt(1-(a_lateral_used/a_lateral_max)**2 )  # Braking deceleration left from the tyres after cornering.
             v_possible = np.sqrt(v_backward_friction_circle[-1]**2 + 2 * a_long_available * ds)
             v_backward_friction_circle.append(min(v_possible, v_limit[i]))
