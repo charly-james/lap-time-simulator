@@ -38,7 +38,7 @@ progression can be followed.
 
 ## Results
 
-Sample circuit, [NUMBER] m long.
+Sample circuitz:
 
 | Model | Lap time |
 |---|---|
