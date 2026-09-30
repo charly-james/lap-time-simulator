@@ -32,6 +32,7 @@ progression can be followed.
 - Power-limited traction: constant maximum force below the motor's base
   speed, constant power above it (F = P/v)
 - Aerodynamic drag, downforce and rolling resistance
+- Top speed computed from the power–drag balance instead of a fixed cap
 - Lap time calculated using the average speed over each segment
 
 ## Results
