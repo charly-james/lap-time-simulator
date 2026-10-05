@@ -4,7 +4,7 @@ import numpy as np
 @dataclass
 class Vehicle:
     mass: float = 800.0  # kg
-    mew: float = 1.5     #tyre friction coefficient
+    mew: float = 1.7     #tyre friction coefficient
     g: float = 9.81      # m/s^2
     power: float = 150e3    # W (peak power at the wheels)
     rho: float = 1.225   # kg/m^3 (air density)

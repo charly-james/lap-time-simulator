@@ -15,6 +15,9 @@ def build_track(segments, ds=1.0):
             distances.append(total_distance)
             curvatures.append(curvature)
             total_distance += ds
+    # Close the lap: the last point is the start line again, so the segment back to the start is included.
+    distances.append(total_distance)
+    curvatures.append(curvatures[0])
     return np.array(distances), np.array(curvatures)
 
 sample_circuit = [("straight", 400, None),

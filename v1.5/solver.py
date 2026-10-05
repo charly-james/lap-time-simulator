@@ -29,10 +29,10 @@ def a_long_tyre(v, kappa, vehicle):
     return np.sqrt(a_grip_max**2 - a_lat_used**2)
 
 
-def forward_pass(kappa, v_limit, ds, vehicle, v_0=0.0):
+def forward_pass(kappa, v_limit, ds, vehicle, v0):
     """Acceleration-limited speed profile (m/s), from start to finish. ds in m."""
     v = np.zeros(len(v_limit))
-    v[0] = v_0
+    v[0] = v0
     for i in range(1, len(v_limit)):
         v_prev = v[i - 1] 
         a_tyre = a_long_tyre(v_prev, kappa[i - 1], vehicle)
@@ -43,11 +43,11 @@ def forward_pass(kappa, v_limit, ds, vehicle, v_0=0.0):
     return v
 
 
-def backward_pass(kappa, v_limit, ds, vehicle):
+def backward_pass(kappa, v_limit, ds, vehicle, v_end):
     """Braking-limited speed profile (m/s), from finish to start. ds in m."""
     n = len(v_limit)
     v = np.zeros(n)
-    v[-1] = v_limit[-1]
+    v[-1] = v_end
     for i in range(n - 2, -1, -1):
         v_next = v[i + 1]
         a_tyre = a_long_tyre(v_next, kappa[i + 1], vehicle)
@@ -65,10 +65,23 @@ def lap_time(v, ds):
     return t
 
 
-def solve(kappa, ds, vehicle, v_0=0.0):
-    """Run the full lap simulation. Returns speed profile (m/s), lap time (s) and corner speed limits (m/s)."""
+def solve(kappa, ds, vehicle):
+    """Run the full lap simulation for a flying lap. Returns speed profile (m/s), lap time (s) and corner speed limits (m/s)."""
     v_limit = corner_speed_limit(kappa, vehicle)
-    v_fwd = forward_pass(kappa, v_limit, ds, vehicle, v_0)
-    v_bwd = backward_pass(kappa, v_limit, ds, vehicle)
-    v = np.minimum(v_fwd, v_bwd)
+    # For a flying lap, the speed at the start line must equal the speed at the end of the lap.
+    # We iterate on v_0 and v_end until they stop changing.
+    v0 = v_limit[0]     # initial guess: start at the speed limit
+    v_end = v_limit[-1]  # initial guess: end at the speed limit
+    for _ in range(2000):  # Limit the number of iterations to avoid infinite loops
+        v_forward = forward_pass(kappa, v_limit, ds, vehicle, v0)
+        v_backward = backward_pass(kappa, v_limit, ds, vehicle, v_end)
+        v0_new = v_forward[-1]     # speed the car arrives back at the start line with
+        v_end_new = v_backward[0]    # speed it can have at the start and still brake in time
+        if abs(v0_new - v0) < 1e-6 and abs(v_end_new - v_end) < 1e-6:
+            break
+        v0 = v0_new
+        v_end = v_end_new
+    else:
+        raise RuntimeError("v0 and v_end did not converge")
+    v = np.minimum(v_forward, v_backward)
     return v, lap_time(v, ds), v_limit
