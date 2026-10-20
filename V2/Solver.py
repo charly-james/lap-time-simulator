@@ -34,8 +34,8 @@ def forward_pass(vehicle, v_limit, v0, kappa, ds):
        ax = vehicle.a_power_max(v_forward[i]) # initial guess for the longitudinal acceleration.
        for j in range(2000):  # Limit the number of iterations to avoid infinite loops
             ax_grip_max = vehicle.ax_grip_max(v_forward[i], ax, kappa[i])
-            a_power_max = vehicle.a_power_max(v_forward[i])
-            ax_new = min(ax_grip_max, a_power_max) - vehicle.total_resistance(v_forward[i])/vehicle.mass
+            a_power_max = vehicle.a_power_max(v_forward[i])-vehicle.total_resistance(v_forward[i])/vehicle.mass #max longitudinal acceleration of the car due to power.
+            ax_new = min(ax_grip_max, a_power_max) 
             if abs(ax_new - ax) <= 1e-6:
                 break
             ax = ax_new

@@ -114,10 +114,11 @@ class Vehicle:
         ay_used = v**2*abs(kappa)
         Fy_rear_used = min(ay_used*self.a*self.mass/self.L, Fy_rear_max)
         Fx_rear_available = Fx_max*np.sqrt(1-(Fy_rear_used/Fy_rear_max)**2)
-        ax_rear_max = Fx_rear_available/self.mass
+        ax_rear_tyres_max = Fx_rear_available/self.mass #maximum longitudinal acceleration the tyres can provide.
+        ax_rear_max = ax_rear_tyres_max - self.total_resistance(v)/self.mass #maximum longitudinal acceleration the car can have due to the rear tyres limitation.
 
         #Also, ax reduces the front load, so we need to check that the front tyres can still provide the lateral force needed for cornering.
-        # Minimum front load that can still provide Fy_front_used.
+        # Minimum front load that can still provide Fy_front_used:
         # mew(Fz)*Fz = mew0*(1+k)*Fz - mew0*k*Fz^2/(2*Fz0).
         # In the limit case, mew(Fz)*Fz = Fy_front_used. This gives A*Fz^2 + B*Fz + C = 0.
         Fy_front_used = ay_used*self.b*self.mass/self.L
@@ -130,13 +131,16 @@ class Vehicle:
             B = -self.mew0*(1+self.k_load)
             C = Fy_front_used
             # Smaller root: the larger one is past the peak of mew(Fz)*Fz, outside the range where the linear mew law is valid.
-            Fz_front_min = (-B - np.sqrt(B**2 - 4*A*C))/(2*A)  # This is the minimum Fz_front that can still provide the requires lateral force.  
+            Fz_front_min = (-B - np.sqrt(B**2 - 4*A*C))/(2*A)  # This is the minimum Fz_front that can still provide the required lateral force.  
 
         # Accelerating removes m*ax*h/L from the front, so the max acceleration is the one that brings the front load down to Fz_front_min.
         Fz_front_ax0, _ = self.normal_force(v, 0.0)
-        ax_front = (Fz_front_ax0 - Fz_front_min)*self.L/(self.mass*self.h)
-        return min(ax_rear_max, ax_front)
-    
+        if self.h == 0:
+            # No load transfer: accelerating doesn't unload the front, so the front check doesn't limit anything.
+            ax_front_max = np.inf
+        else:
+            ax_front_max = (Fz_front_ax0 - Fz_front_min)*self.L/(self.mass*self.h)
+        return min(ax_rear_max, ax_front_max)
 
     def a_braking_max(self, v, ax, kappa):
 
