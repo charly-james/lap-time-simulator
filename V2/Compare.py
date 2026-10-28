@@ -31,5 +31,5 @@ runs = {
 
 print(f"{'Run':<35}{'Lap time (s)':>14}{'R40 limit (m/s)':>18}")
 for name, vehicle in runs.items():
-    v, lap_time, v_limit = solve(vehicle, kappa, ds)
+    v, lap_time, v_limit, ax = solve(vehicle, kappa, ds)
     print(f"{name:<35}{lap_time:>14.2f}{v_limit[corner].min():>18.2f}")
