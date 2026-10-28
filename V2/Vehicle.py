@@ -53,9 +53,9 @@ class Vehicle:
         """Calculate the normal force on the front and rear axles based on the vehicle's speed, weight distribution, and downforce."""
         [downforce_front, downforce_rear] = self.downforce(v)
         # Front axle:
-        Fz_front = (self.mass*self.g*self.b + downforce_front*self.L -self.mass*ax*self.h)/(self.L)
+        Fz_front = (self.mass*self.g*self.b + downforce_front*self.L -self.mass*ax*self.h - self.drag(v)*self.h)/(self.L)
         # Rear axle:
-        Fz_rear = (self.mass*self.g*self.a + downforce_rear*self.L + self.mass*ax*self.h)/(self.L)
+        Fz_rear = (self.mass*self.g*self.a + downforce_rear*self.L + self.mass*ax*self.h + self.drag(v)*self.h)/(self.L)
         return Fz_front, Fz_rear
     
 
@@ -96,8 +96,11 @@ class Vehicle:
 
         # Rear axle: Calculate the maximum lateral acceleration the rear axle can withstand.
         mew_rear = self.mew(Fz_rear)
-        Fy_max_rear = mew_rear*Fz_rear
+        Fx_rear = self.total_resistance(v)
+        Fy_max_rear = mew_rear*Fz_rear*np.sqrt(1-(Fx_rear/(mew_rear*Fz_rear))**2)
         ay_max_rear = (self.L*Fy_max_rear)/(self.mass*self.a)
+
+        # The car is limited by the weaker axle:
         ay_grip_max = min(ay_max_front, ay_max_rear)
         return ay_grip_max
     
