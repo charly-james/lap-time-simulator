@@ -29,7 +29,6 @@ def forward_pass(vehicle, v_limit, v0, kappa, ds):
     """Compute the acceleration-limited speed profile from start to finish using the bicycle model grip limits."""
     v_forward = np.zeros_like(v_limit)
     v_forward[0] = v0
-
     for i in range (len(kappa)-1):
        ax = vehicle.a_power_max(v_forward[i]) # initial guess for the longitudinal acceleration.
        for j in range(2000):  # Limit the number of iterations to avoid infinite loops
@@ -103,4 +102,8 @@ def solve(vehicle, kappa, ds):
     else:
         raise RuntimeError("v0 and v_end did not converge")
     v = np.minimum(v_forward, v_backward)
-    return v, lap_time(v, ds), v_limit
+    ax = np.zeros_like(v)
+    for i in range(len(v)-1):
+        ax[i] = (v[i+1]**2 - v[i]**2)/(2*ds)
+    ax[-1] = ax[0] # Last and first point have the same acceleration since it's a flying closed lap.
+    return v, lap_time(v, ds), v_limit, ax

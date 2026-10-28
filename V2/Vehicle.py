@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import numpy as np
+from scipy.optimize import brentq 
 
 @dataclass
 class Vehicle:
@@ -179,3 +180,24 @@ class Vehicle:
         b = self.Crr * self.mass * self.g
         roots = np.roots([a, 0, b, -self.power])
         return roots[np.isreal(roots) & (roots.real > 0)].real[0]
+
+    def magic_formula_lateral(self, Fz, alpha):
+        """Calculate the lateral force using the Magic Formula."""
+        mew = self.mew(Fz)
+        return Fz * mew * np.sin(self.Cy * np.arctan(self.By * alpha - self.Ey * (self.By * alpha - np.arctan(self.By * alpha))))
+
+    
+    # Peak slip angle calculation (the slip angle that generates the maximum lateral force):
+    # At the peak slip angle, the sin term is one, so the term inside the sine is pi/2.
+    # The term inside the sin is Cy*arctan(X) and at the peak it is pi/2.
+    # Therfore, Cy*arctan(X) = pi/2 => arctan(X) = pi/(2*Cy) => X = tan(pi/(2*Cy))
+    # We will thwerefore create a function X = By*alpha - Ey*(By*alpha - arctan(By*alpha)) and find the alpha that makes this equal to tan(pi/(2*Cy)). This will be the peak slip angle.
+    # In other words we will find where X - tan(pi/(2*Cy)) = 0.
+
+    @property
+    def peak_slip_angle(self):
+        X_peak = np.tan(np.pi/(2*self.Cy))
+        def f(alpha):
+            return self.By*alpha - self.Ey*(self.By*alpha - np.arctan(self.By*alpha)) - X_peak
+        return brentq(f, 0, np.pi/2)
+
