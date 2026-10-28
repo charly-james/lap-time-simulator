@@ -19,7 +19,7 @@ from Solver import solve
 
 ds = 1.0
 s, kappa = build_track(sample_circuit, ds)
-corner = (s >= 400) & (s <= 490)    # the 40 m-radius corner
+corner = (s >= 300) & (s <= 393)    # the 40 m-radius corner
 
 runs = {
     "v2 (full model)": Vehicle(),
