@@ -19,8 +19,6 @@ progression can be followed.
 
 ## Versions
 
-## Versions
-
 ### v1 - Point-mass model with friction circle
 - Track built from straight and corner segments, split into 1 m steps, each with its curvature (1/radius, zero on straights)
 - Corner speed limit from the tyre grip: v = √(μg/κ), capped at a fixed top speed
